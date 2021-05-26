@@ -1,3 +1,8 @@
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { dirname } = require("node:path");
 const path = require("path");
 
 module.exports = {
@@ -5,7 +10,26 @@ module.exports = {
   mode: "development",
   entry: "./index.js",
   output: {
-    filename: "bundle.js",
+    filename: "bundle.[hash].js",
     path: path.resolve(__dirname, "dist"),
   },
+  resolve:{
+    extensions:['.js'],
+    alias:{
+      "@":path.resolve(dirname,'src'),
+      "@core":path.resolve(dirname,'src/core'),
+    }
+  },
+  plugins:[
+    new CleanWebpackPlugin(),
+    new HTMLWebpackPlugin({
+      template:'index.html '
+    }),
+    new CopyPlugin([
+      {from:path.resolve(__dirname,'src/favicon.ico'),to:path.resolve(__dirname,'dist')}
+    ]),
+    new MiniCssExtractPlugin({
+      filename:'bundle.[hash].css'
+    })
+  ]
 };
